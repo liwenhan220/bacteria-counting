@@ -5,7 +5,7 @@ import getopt
 argv = sys.argv[1:]
 
 try:
-    opts, args = getopt.getopt(argv, "m:l:e", 
+    opts, args = getopt.getopt(argv, "m:l:e:", 
                                 ["model_dir=",
                                 "log_dir=",
                                 "num_epochs="])
@@ -24,7 +24,8 @@ for opt, arg in opts:
         LOG_DIR = arg
 
     elif opt in ['-e', '--num_epochs']:
-        EPOCHS = arg
+        print(arg)
+        EPOCHS = int(arg)
 
 print('model dir: {}\nlog dir: {}\nnum epochs: {}\n'.format(MODEL_DIR, LOG_DIR, EPOCHS))
 

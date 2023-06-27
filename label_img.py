@@ -10,34 +10,40 @@ import pdb
 argv = sys.argv[1:]
 
 try:
-    opts, args = getopt.getopt(argv, "m:i:o:", 
+    opts, args = getopt.getopt(argv, "m:i:o:n:", 
                                 ["model_path=",
                                 "image_path=",
-                                "output_path="])
+                                "output_path=",
+                                "model_number="])
 except:
     print("Error")
 
-MODEL_PATH = 'models/bact_model_49'
-IMG_NAME = "raw_data/negative/swab-1.bmp"
+MODEL_DIR = 'models'
+MODEL_NUM = 49
+# MODEL_PATH = 'models/bact_model_49'
 OUTPUT_PATH = "labeled.bmp"
+INPUT_SHAPE_FILE = 'models/input_shape.npy'
 
-
-# IMG_NAME = "raw_data/Ecoli-positive/E.coli + 10.bmp"
+# IMG_NAME = "raw_data/Ecoli-positive/E.coli + 1.bmp"
 # IMG_NAME = "raw_data/Styphi-positive/S.typhi + 1.bmp"
-# IMG_NAME = "raw_data/negative/swab-1.bmp"
+IMG_NAME = "raw_data/negative/swab-1.bmp"
 
 
 for opt, arg in opts:
     if opt in ['-m', '--model_path']:
-        MODEL_PATH = arg
+        MODEL_DIR = arg
 
     elif opt in ['-i', '--image_path']:
         IMG_NAME = arg
 
     elif opt in ['-o', '--output_path']:
         OUTPUT_PATH = arg
+    
+    elif opt in ['-n', '--model_number']:
+        MODEL_NUM = arg
 
-
+MODEL_PATH = MODEL_DIR + '/bact_model_{}'.format(MODEL_NUM)
+INPUT_SHAPE = tuple(np.load(INPUT_SHAPE_FILE))
 print('model name: {}'.format(MODEL_PATH))
 print('img name: {}'.format(IMG_NAME))
 print('output path: {}'.format(OUTPUT_PATH))
@@ -49,7 +55,7 @@ model = LeNet5(2)
 model.load_state_dict(torch.load(MODEL_PATH))
 model.to(device=device)
 model.eval()
-max_shape = np.load('extracted_data/testX.npy')[0].shape[:2]
+max_shape = INPUT_SHAPE
 
 img = cv2.imread(IMG_NAME)
 bacts, _ = generate_bacts(img, 0, cover_corners= False, debug = False, debug_path = None, threshold=0, max_diameter=float('inf'))
