@@ -24,7 +24,7 @@ for opt, arg in opts:
         LOG_DIR = arg
 
     elif opt in ['-e', '--num_epochs']:
-        print(arg)
+        # print(arg)
         EPOCHS = int(arg)
 
 print('model dir: {}\nlog dir: {}\nnum epochs: {}\n'.format(MODEL_DIR, LOG_DIR, EPOCHS))

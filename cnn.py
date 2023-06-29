@@ -10,7 +10,7 @@ import os
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 class LeNet5(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self, input_shape, num_classes):
         super(LeNet5, self).__init__()
         self.layer1 = nn.Sequential(
             nn.Conv2d(3, 6, kernel_size=5, stride=1, padding=2),
@@ -22,7 +22,10 @@ class LeNet5(nn.Module):
             nn.BatchNorm2d(16),
             nn.ReLU(),
             nn.MaxPool2d(kernel_size = 2, stride = 2))
-        self.fc = nn.Linear(4320, 120)
+        
+        sim_input = torch.zeros((1, *input_shape))
+        sim_out = torch.flatten(self.layer2(self.layer1(sim_input)))
+        self.fc = nn.Linear(len(sim_out), 120)
         self.relu = nn.ReLU()
         self.fc1 = nn.Linear(120, 84)
         self.relu1 = nn.ReLU()
@@ -32,7 +35,6 @@ class LeNet5(nn.Module):
     def forward(self, x):
         out = self.layer1(x)
         out = self.layer2(out)
-        # pdb.set_trace()
         out = out.reshape(out.size(0), -1)
         out = self.fc(out)
         out = self.relu(out)
@@ -138,7 +140,7 @@ def train_loop(num_epochs, model_path, log_path):
 
 
     loss_fn = nn.CrossEntropyLoss()
-    model = LeNet5(2).to(device)
+    model = LeNet5((3, *input_shape), 2).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-5)
 
     losses = []

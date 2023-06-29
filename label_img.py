@@ -19,7 +19,7 @@ except:
     print("Error")
 
 MODEL_DIR = 'models'
-MODEL_NUM = 49
+MODEL_NUM = 10
 # MODEL_PATH = 'models/bact_model_49'
 OUTPUT_PATH = "labeled.bmp"
 INPUT_SHAPE_FILE = 'models/input_shape.npy'
@@ -51,7 +51,7 @@ print('output path: {}'.format(OUTPUT_PATH))
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-model = LeNet5(2)
+model = LeNet5((3, *INPUT_SHAPE), 2)
 model.load_state_dict(torch.load(MODEL_PATH))
 model.to(device=device)
 model.eval()

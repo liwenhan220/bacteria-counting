@@ -311,7 +311,7 @@ def preprocess(orig_img, cover_corners=True):
     img = orig_img.copy()
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = cv2.adaptiveThreshold(img, 1, cv2.ADAPTIVE_THRESH_MEAN_C,
-                                          cv2.THRESH_BINARY, 51, 5)
+                                          cv2.THRESH_BINARY, 15, 5)
     img = invert_img(img)
     if cover_corners:
         img = roi(img, is_threshold=True)
