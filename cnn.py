@@ -65,11 +65,11 @@ def train_one_epoch(epoch_index, model, train_loader, loss_fn, optimizer):
         optimizer.zero_grad()
 
         # Make predictions for this batch
-        outputs = model(inputs)
+        outputs = model(inputs.to(device))
         # pdb.set_trace()
 
         # Compute the loss and its gradients
-        loss = loss_fn(outputs, labels)
+        loss = loss_fn(outputs.cpu(), labels)
         loss.backward()
 
         # Adjust learning weights
@@ -121,13 +121,13 @@ def train_loop(num_epochs, model_path, log_path):
     valX = np.load("extracted_data/testX.npy")
 
     # pdb.set_trace()
-    valX = torch.Tensor(reshape_data(valX)).to(device)
-    valY = torch.Tensor(np.load("extracted_data/testY.npy")).long().to(device)
+    valX = torch.Tensor(reshape_data(valX))
+    valY = torch.Tensor(np.load("extracted_data/testY.npy")).long()
 
     trainX = np.load("extracted_data/trainX.npy")
 
-    trainX = torch.Tensor(reshape_data(trainX)).to(device)
-    trainY = torch.Tensor(np.load("extracted_data/trainY.npy")).long().to(device)
+    trainX = torch.Tensor(reshape_data(trainX))
+    trainY = torch.Tensor(np.load("extracted_data/trainY.npy")).long()
 
     trainset = TensorDataset(trainX, trainY)
     train_loader = DataLoader(trainset, batch_size=64, shuffle=True)
@@ -140,7 +140,7 @@ def train_loop(num_epochs, model_path, log_path):
 
 
     loss_fn = nn.CrossEntropyLoss()
-    model = LeNet5((3, *input_shape), 2).to(device)
+    model = LeNet5((3, *input_shape), 2)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-5)
 
     losses = []

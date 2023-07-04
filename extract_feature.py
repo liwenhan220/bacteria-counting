@@ -112,7 +112,7 @@ class Bacteria:
         return self.bg_mean
     
     def bg_normalized(self):
-        return self.img / self.get_bg_mean()
+        return (self.img / self.get_bg_mean()).astype(np.float32)
     
     def img_mean(self, img):
         f_img = img.flatten()
@@ -292,10 +292,10 @@ def roi(img, is_threshold=False):
     cover_upper_right(img, is_threshold)
     return img
 
-def draw_bacteria(img, bact: Bacteria, color=[0, 255, 0]):
+def draw_bacteria(img, bact: Bacteria, color=[0, 255, 0], w = 0.7):
     for x, y in bact.coords:
         if bact.is_boundary(x, y):
-            img[x][y] = color
+            img[x][y] = (w * np.array(color) + (1-w) * img[x][y]).astype(np.uint8)
 
     pt1, pt2 = bact.get_end_pts()
     img[tuple(pt1)] = [255,255,255]
@@ -311,7 +311,7 @@ def preprocess(orig_img, cover_corners=True):
     img = orig_img.copy()
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = cv2.adaptiveThreshold(img, 1, cv2.ADAPTIVE_THRESH_MEAN_C,
-                                          cv2.THRESH_BINARY, 15, 5)
+                                          cv2.THRESH_BINARY, 15, 4)
     img = invert_img(img)
     if cover_corners:
         img = roi(img, is_threshold=True)

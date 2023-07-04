@@ -19,7 +19,7 @@ except:
     print("Error")
 
 MODEL_DIR = 'models'
-MODEL_NUM = 10
+MODEL_NUM = 42
 # MODEL_PATH = 'models/bact_model_49'
 OUTPUT_PATH = "labeled.bmp"
 INPUT_SHAPE_FILE = 'models/input_shape.npy'
