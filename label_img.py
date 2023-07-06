@@ -19,14 +19,14 @@ except:
     print("Error")
 
 MODEL_DIR = 'models'
-MODEL_NUM = 42
+MODEL_NUM = 38
 # MODEL_PATH = 'models/bact_model_49'
-OUTPUT_PATH = "labeled.bmp"
+OUTPUT_PATH = "output_img.bmp"
 INPUT_SHAPE_FILE = 'models/input_shape.npy'
 
-# IMG_NAME = "raw_data/Ecoli-positive/E.coli + 1.bmp"
+IMG_NAME = "raw_data/Ecoli-positive/E.coli + 1.bmp"
 # IMG_NAME = "raw_data/Styphi-positive/S.typhi + 1.bmp"
-IMG_NAME = "raw_data/negative/swab-1.bmp"
+# IMG_NAME = "raw_data/negative/swab-1.bmp"
 
 
 for opt, arg in opts:
@@ -82,5 +82,5 @@ for bact in pbar:
     draw_bacteria(img, bact, color)
 
 print('bacteria count: {}\nnoise count: {}\nbact rate: {}'.format(bact_count, noise_count, bact_count / (bact_count + noise_count)))
-cv2.imwrite('labeled_img.bmp', img)
+cv2.imwrite(OUTPUT_PATH, img)
 

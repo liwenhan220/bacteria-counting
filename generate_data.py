@@ -24,7 +24,7 @@ for i in range(1, 11):
     name = "E.coli + {}.bmp".format(i)
     input_img_path = raw_folder + ecoli + name
     img = cv2.imread(input_img_path)
-    bacts, shape = generate_bacts(img, 0, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0.7, max_diameter=15)
+    bacts, shape = generate_bacts(img, 0, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0.7, max_diameter=float('inf'))
     if i <= test_split_index:
         test_bacts += bacts
     else:
@@ -36,7 +36,7 @@ for i in range(1, 17):
     name = "S.typhi + {}.bmp".format(i)
     input_img_path = raw_folder + styphi + name
     img = cv2.imread(input_img_path)
-    bacts, shape = generate_bacts(img, 0, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0.0,  max_diameter=10)
+    bacts, shape = generate_bacts(img, 0, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0.0,  max_diameter=9)
     if i <= test_split_index:
         test_bacts += bacts
     else:
