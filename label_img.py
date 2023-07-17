@@ -19,14 +19,16 @@ except:
     print("Error")
 
 MODEL_DIR = 'models'
-MODEL_NUM = 38
+MODEL_NUM = 49
 # MODEL_PATH = 'models/bact_model_49'
 OUTPUT_PATH = "output_img.bmp"
 INPUT_SHAPE_FILE = 'models/input_shape.npy'
 
-IMG_NAME = "raw_data/Ecoli-positive/E.coli + 1.bmp"
+# IMG_NAME = "raw_data/Ecoli-positive/E.coli + 1.bmp"
 # IMG_NAME = "raw_data/Styphi-positive/S.typhi + 1.bmp"
 # IMG_NAME = "raw_data/negative/swab-1.bmp"
+IMG_NAME = "raw_data/new negative/-1.bmp"
+# IMG_NAME = "raw_data/new negative/-small swab5-1.bmp"
 
 
 for opt, arg in opts:
@@ -58,7 +60,7 @@ model.eval()
 max_shape = INPUT_SHAPE
 
 img = cv2.imread(IMG_NAME)
-bacts, _ = generate_bacts(img, 0, cover_corners= False, debug = False, debug_path = None, threshold=0, max_diameter=float('inf'))
+bacts, _ = generate_bacts(img, 0, bias = 4.5, cover_corners= False, debug = False, debug_path = None, threshold=0, max_diameter=float('inf'))
 
 
 bact_count = 0

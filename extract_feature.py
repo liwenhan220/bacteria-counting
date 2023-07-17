@@ -292,14 +292,21 @@ def roi(img, is_threshold=False):
     cover_upper_right(img, is_threshold)
     return img
 
-def draw_bacteria(img, bact: Bacteria, color=[0, 255, 0], w = 0.7):
+def draw_bacteria(img, bact: Bacteria, color=[0, 255, 0]):
     for x, y in bact.coords:
         if bact.is_boundary(x, y):
-            img[x][y] = (w * np.array(color) + (1-w) * img[x][y]).astype(np.uint8)
+            for i, j in [[1,0], [0,1], [1,1], [1,-1]]:
+                for w in [1, -1]:
+                    xx = x + w * i
+                    yy = y + w * j
+                    if xx < 0 or yy < 0 or xx >= len(img) or yy >= len(img[0]):
+                        continue
+                    if [xx, yy] not in bact.coords:
+                        img[xx][yy] = color
 
-    pt1, pt2 = bact.get_end_pts()
-    img[tuple(pt1)] = [255,255,255]
-    img[tuple(pt2)] = [255,255,255]
+    # pt1, pt2 = bact.get_end_pts()
+    # img[tuple(pt1)] = [255,255,255]
+    # img[tuple(pt2)] = [255,255,255]
     return img
 
 def invert_img(img):
@@ -307,21 +314,21 @@ def invert_img(img):
     new_img -= img
     return new_img
 
-def preprocess(orig_img, cover_corners=True):
+def preprocess(orig_img, cover_corners=True, bias = 3):
     img = orig_img.copy()
     img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     img = cv2.adaptiveThreshold(img, 1, cv2.ADAPTIVE_THRESH_MEAN_C,
-                                          cv2.THRESH_BINARY, 15, 3)
+                                          cv2.THRESH_BINARY, 15, bias)
     img = invert_img(img)
     if cover_corners:
         img = roi(img, is_threshold=True)
     return img
     
-def generate_bacts(img, label, debug=False, debug_path = "for_debug.bmp", image_name = "current image", cover_corners=True, threshold = 2.0, max_diameter = 15):
-    processed_img = preprocess(img, cover_corners=cover_corners)
+def generate_bacts(img, label, debug=False, bias = 3, size = [10, 200], debug_path = "for_debug.bmp", image_name = "current image", cover_corners=True, threshold = 2.0, max_diameter = 15):
+    processed_img = preprocess(img, cover_corners=cover_corners, bias= bias)
     if debug:
         debug_img = img.copy()
-    bacts = find_all_bact(processed_img, size=[10, 200], image_name=image_name)
+    bacts = find_all_bact(processed_img, size=size, image_name=image_name)
     bact_count = 0
     max_shape = (1, 1)
     final_bacts = []

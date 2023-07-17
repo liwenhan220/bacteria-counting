@@ -13,6 +13,7 @@ raw_folder = "raw_data/"
 ecoli = "Ecoli-positive/"
 styphi = "Styphi-positive/"
 negative = "negative/"
+new_neg = "new negative/"
 
 test_bacts = []
 train_bacts = []
@@ -24,7 +25,7 @@ for i in range(1, 11):
     name = "E.coli + {}.bmp".format(i)
     input_img_path = raw_folder + ecoli + name
     img = cv2.imread(input_img_path)
-    bacts, shape = generate_bacts(img, 0, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0.7, max_diameter=float('inf'))
+    bacts, shape = generate_bacts(img, 0, bias = 4.5, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0.7, max_diameter=10)
     if i <= test_split_index:
         test_bacts += bacts
     else:
@@ -36,7 +37,7 @@ for i in range(1, 17):
     name = "S.typhi + {}.bmp".format(i)
     input_img_path = raw_folder + styphi + name
     img = cv2.imread(input_img_path)
-    bacts, shape = generate_bacts(img, 0, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0.0,  max_diameter=9)
+    bacts, shape = generate_bacts(img, 0, bias = 4.5, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0.7,  max_diameter=9)
     if i <= test_split_index:
         test_bacts += bacts
     else:
@@ -49,15 +50,48 @@ for i in range(1, 12):
     input_img_path = raw_folder + negative + "swab-{}.bmp".format(i)
     img = cv2.imread(input_img_path)
     if i > 1:
-        bacts, shape = generate_bacts(img, 1, cover_corners= False, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0, max_diameter=float('inf'))
+        bacts, shape = generate_bacts(img, 1, bias = 4.5, size = [10, 200], cover_corners= False, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0, max_diameter=float('inf'))
     else:
-        bacts, shape = generate_bacts(img, 1, cover_corners= False, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0, max_diameter=float('inf'))
+        bacts, shape = generate_bacts(img, 1, bias = 4.5, size = [10, 200], cover_corners= False, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0, max_diameter=float('inf'))
 
     if i <= test_split_index:
         test_bacts += bacts
     else:
         train_bacts += bacts
     max_shape = max_box(max_shape, shape)
+
+# load new negative data part 1
+for i in range(1, 5):
+    name = "-{}.bmp".format(i)
+    input_img_path = raw_folder + new_neg + "-{}.bmp".format(i)
+    img = cv2.imread(input_img_path)
+    if i > 1:
+        bacts, shape = generate_bacts(img, 1, bias = 4.5, size = [10, 200], cover_corners= False, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0, max_diameter=float('inf'))
+    else:
+        bacts, shape = generate_bacts(img, 1, bias = 4.5, size = [10, 200], cover_corners= False, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0, max_diameter=float('inf'))
+
+    if i <= test_split_index:
+        test_bacts += bacts
+    else:
+        train_bacts += bacts
+    max_shape = max_box(max_shape, shape)
+
+# load new negative data part 2
+for i in range(1, 5):
+    name = "-small swab5-{}.bmp".format(i)
+    input_img_path = raw_folder + new_neg + "-small swab5-{}.bmp".format(i)
+    img = cv2.imread(input_img_path)
+    if i > 1:
+        bacts, shape = generate_bacts(img, 1, bias = 4.5, size = [10, 200], cover_corners= False, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0, max_diameter=float('inf'))
+    else:
+        bacts, shape = generate_bacts(img, 1, bias = 4.5, size = [10, 200], cover_corners= False, debug = True, debug_path = directories[1] + '/' + name, image_name=name, threshold = 0, max_diameter=float('inf'))
+
+    if i <= test_split_index:
+        test_bacts += bacts
+    else:
+        train_bacts += bacts
+    max_shape = max_box(max_shape, shape)
+
 
 X = []
 y = []
